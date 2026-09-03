@@ -47,8 +47,13 @@ def main():
         print("No valid MTProto proxy link found.")
         return
 
-    # HTML format clean clickable blue link banata hai
-    text = f"⚡ <b>Fast MTProto Proxy</b> ⚡\n\n🚀 <a href=\"{proxy_link}\">Click Here to Connect Proxy</a>"
+    # Urdu/Persian "پروکسی" links layout
+    text = (
+        "⚡ <b>Fast MTProto Proxy</b> ⚡\n\n"
+        f"<b><a href='{proxy_link}'>پروکسی</a> | <a href='{proxy_link}'>پروکسی</a> | <a href='{proxy_link}'>پروکسی</a></b>\n"
+        f"<b><a href='{proxy_link}'>پروکسی</a> | <a href='{proxy_link}'>پروکسی</a> | <a href='{proxy_link}'>پروکسی</a></b>\n\n"
+        f"<b><a href='{proxy_link}'>🚀 Connect Proxy</a></b>"
+    )
     
     payload = {
         "chat_id": CHANNEL_NAME,
