@@ -47,16 +47,14 @@ def main():
         print("No valid MTProto proxy link found.")
         return
 
-    text = "⚡ **Fast MTProto Proxy** ⚡\n\nClick below to connect:"
+    # Button ki bajaye direct message body mein hyperlinked format
+    text = f"⚡ **Fast MTProto Proxy** ⚡\n\n🚀 [Click Here to Connect Proxy]({proxy_link})"
+    
     payload = {
         "chat_id": CHANNEL_NAME,
         "text": text,
         "parse_mode": "Markdown",
-        "reply_markup": {
-            "inline_keyboard": [[
-                {"text": "🚀 Connect Proxy", "url": proxy_link}
-            ]]
-        }
+        "disable_web_page_preview": False
     }
     
     tg_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
