@@ -55,6 +55,7 @@ def main():
         f"<b><a href=\"{p7}\">Proxy</a> | <a href=\"{p8}\">پروکسی</a> | <a href=\"{p9}\">Proxy</a></b>\n"
         f"<b><a href=\"{p10}\">Proxy</a> | <a href=\"{p11}\">پروکسی</a> | <a href=\"{p12}\">Proxy</a></b>\n\n"
         f"🚀 <b><a href=\"{p1}\">Connect Proxy</a></b>🌍"
+        f"<a>چینل کو سبسکرائب کریں ٹیلی گرام کو بغیرVPN چلانے کے لیے کسی بھی Proxy پر کلک کر کے Connect کریں</a>
     )
     
     payload = {
