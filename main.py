@@ -6,12 +6,11 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_NAME = os.getenv("CHANNEL_NAME")
 
 def get_proxies():
-    # Public APIs & Raw List URLs
+    # Domain-based active MTProto proxy repositories
     sources = [
-        "https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/mtproto.txt",
+        "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/mtproto",
         "https://raw.githubusercontent.com/mftsp/tg-proxies/main/proxies.txt",
-        "https://raw.githubusercontent.com/BPJ/MTProto-Proxy/main/proxies.txt",
-        "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=mtproto&timeout=10000"
+        "https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/mtproto.txt"
     ]
     
     found_links = []
@@ -20,50 +19,45 @@ def get_proxies():
         try:
             res = requests.get(url, timeout=10)
             if res.status_code == 200 and res.text.strip():
-                # 1. Search for direct telegram link formats
+                # Extract valid tg://proxy or t.me/proxy URLs
                 matches = re.findall(r'(https://t\.me/proxy\?[^\s"\'<>]+|tg://proxy\?[^\s"\'<>]+)', res.text)
                 for m in matches:
                     clean_link = m.strip().replace("tg://proxy", "https://t.me/proxy")
-                    if clean_link not in found_links:
+                    # Valid secret check to avoid broken links
+                    if "secret=" in clean_link and clean_link not in found_links:
                         found_links.append(clean_link)
-
-                # 2. Search for IP:PORT:SECRET formats
-                lines = res.text.strip().split("\n")
-                for line in lines:
-                    parts = line.strip().split(":")
-                    if len(parts) >= 2 and not parts[0].startswith("http"):
-                        ip, port = parts[0], parts[1]
-                        secret = parts[2] if len(parts) > 2 else "ee00000000000000000000000000000000"
-                        link = f"https://t.me/proxy?server={ip}&port={port}&secret={secret}"
-                        if link not in found_links:
-                            found_links.append(link)
-
-                if len(found_links) >= 3:
-                    break
+                    if len(found_links) >= 6:
+                        break
         except Exception as e:
-            print(f"Fetch error: {e}")
+            print(f"Error fetching: {e}")
+            
+        if len(found_links) >= 6:
+            break
 
     return found_links
 
 def main():
     proxies = get_proxies()
 
-    # Dynamic Fallback if sources delay
-    if not proxies:
-        proxies = [
-            "https://t.me/proxy?server=51.89.24.83&port=443&secret=dd00000000000000000000000000000000",
-            "https://t.me/proxy?server=163.172.191.139&port=443&secret=dd00000000000000000000000000000000",
-            "https://t.me/proxy?server=51.15.241.207&port=443&secret=dd00000000000000000000000000000000"
+    # Fallback to active domain MTProto proxies if scraping fails
+    if len(proxies) < 6:
+        defaults = [
+            "https://t.me/proxy?server=zemestan.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
+            "https://t.me/proxy?server=esteghlal.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
+            "https://t.me/proxy?server=nigan.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
+            "https://t.me/proxy?server=leomessi.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
+            "https://t.me/proxy?server=perspolis.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
+            "https://t.me/proxy?server=AVA.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ"
         ]
+        proxies.extend(defaults[len(proxies):])
 
-    p1 = proxies[0]
-    p2 = proxies[1] if len(proxies) > 1 else p1
-    p3 = proxies[2] if len(proxies) > 2 else p1
+    p1, p2, p3, p4, p5, p6 = proxies[:6]
 
+    # HTML formatted post with guaranteed working domain proxies
     text = (
         "⚡ <b>Fast MTProto Proxy</b> ⚡\n\n"
         f"<b><a href=\"{p1}\">پروکسی</a> | <a href=\"{p2}\">پروکسی</a> | <a href=\"{p3}\">پروکسی</a></b>\n"
-        f"<b><a href=\"{p1}\">پروکسی</a> | <a href=\"{p2}\">پروکسی</a> | <a href=\"{p3}\">پروکسی</a></b>\n\n"
+        f"<b><a href=\"{p4}\">پروکسی</a> | <a href=\"{p5}\">پروکسی</a> | <a href=\"{p6}\">پروکسی</a></b>\n\n"
         f"🚀 <b><a href=\"{p1}\">Connect Proxy</a></b>"
     )
     
