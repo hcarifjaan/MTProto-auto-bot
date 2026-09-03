@@ -6,10 +6,11 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_NAME = os.getenv("CHANNEL_NAME")
 
 def get_proxies():
+    # Direct raw text sources for active MTProto proxies
     sources = [
-        "https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/mtproto.txt",
-        "https://raw.githubusercontent.com/v2fly/freenode/main/v2ray.txt",
-        "https://raw.githubusercontent.com/E34678/Telegram-Proxies/main/proxies.txt"
+        "https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt",
+        "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/mtproto",
+        "https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/sub/sub_merge.txt"
     ]
     
     found_links = []
@@ -18,32 +19,34 @@ def get_proxies():
         try:
             res = requests.get(url, timeout=10)
             if res.status_code == 200:
-                matches = re.findall(r'https://t\.me/proxy\?[^\s"\'<>]+', res.text)
+                # tg://proxy ya t.me/proxy links extract karne ke liye regex
+                matches = re.findall(r'(https://t\.me/proxy\?[^\s"\'<>]+|tg://proxy\?[^\s"\'<>]+)', res.text)
                 for m in matches:
-                    clean_m = m.strip()
-                    if clean_m not in found_links:
-                        found_links.append(clean_m)
+                    clean_link = m.strip().replace("tg://proxy", "https://t.me/proxy")
+                    if clean_link not in found_links:
+                        found_links.append(clean_link)
                     if len(found_links) >= 3:
                         break
         except Exception as e:
-            print(f"Error fetching: {e}")
+            print(f"Error scraping {url}: {e}")
             
         if len(found_links) >= 3:
             break
-
-    # Fallback agar scraper se links na milein
-    fallback_link = "https://t.me/proxy?server=1.1.1.1&port=443&secret=ee00000000000000000000000000000000"
-    while len(found_links) < 3:
-        found_links.append(fallback_link)
 
     return found_links
 
 def main():
     proxies = get_proxies()
 
-    p1, p2, p3 = proxies[0], proxies[1], proxies[2]
+    if not proxies:
+        print("No valid proxies fetched. Skipping post.")
+        return
 
-    # Clean HTML code with valid non-empty links
+    # Dynamic links fill karna
+    p1 = proxies[0]
+    p2 = proxies[1] if len(proxies) > 1 else p1
+    p3 = proxies[2] if len(proxies) > 2 else p1
+
     text = (
         "⚡ <b>Fast MTProto Proxy</b> ⚡\n\n"
         f"<b><a href=\"{p1}\">پروکسی</a> | <a href=\"{p2}\">پروکسی</a> | <a href=\"{p3}\">پروکسی</a></b>\n"
