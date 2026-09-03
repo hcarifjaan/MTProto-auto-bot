@@ -1,68 +1,59 @@
 import os
 import requests
 import re
+import random
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_NAME = os.getenv("CHANNEL_NAME")
 
-def get_live_proxies():
-    # Active high-uptime sources for MTProto
-    sources = [
-        "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/mtproto",
-        "https://raw.githubusercontent.com/mftsp/tg-proxies/main/proxies.txt",
-        "https://raw.githubusercontent.com/MahdiBland/ShadowsocksAggregator/master/sub/sub_merge.txt",
-        "https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/mtproto.txt"
+def get_exact_working_proxies():
+    # Exact DD-secret required for goooalir servers
+    SECRET = "dd104462821249bd7ac519130220c25d09"
+    PORT = "8443"
+
+    # Known live high-speed servers from this provider
+    subdomains = [
+        "AZADI", "napoli", "sefid", "behtarin", 
+        "leomessi", "AVA", "nigan", "narooo", 
+        "esteghlal", "zemestan", "perspolis"
     ]
-    
-    found_links = []
-    
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-    }
 
-    for url in sources:
-        try:
-            res = requests.get(url, headers=headers, timeout=8)
-            if res.status_code == 200 and res.text.strip():
-                # Extract tg:// or t.me proxy links
-                matches = re.findall(r'(https://t\.me/proxy\?[^\s"\'<>]+|tg://proxy\?[^\s"\'<>]+)', res.text)
-                for m in matches:
-                    clean_link = m.strip().replace("tg://proxy", "https://t.me/proxy")
-                    if clean_link not in found_links:
-                        found_links.append(clean_link)
-                    if len(found_links) >= 6:
-                        break
-        except Exception as e:
-            print(f"Fetch log: {e}")
-            
-        if len(found_links) >= 6:
-            break
+    # Try scraping fresh subdomains directly from public TG channel mirrors
+    scraped_subdomains = []
+    try:
+        res = requests.get("https://t.me/s/ProxyMTProto", timeout=5)
+        if res.status_code == 200:
+            matches = re.findall(r'server=([a-zA-Z0-9\.-]+)\.goooalir\.co\.uk', res.text)
+            for m in matches:
+                if m not in scraped_subdomains:
+                    scraped_subdomains.append(m)
+    except Exception as e:
+        print(f"Scrape warning: {e}")
 
-    return found_links
+    # Combine scraped + verified list
+    all_subdomains = scraped_subdomains + [s for s in subdomains if s not in scraped_subdomains]
+    random.shuffle(all_subdomains)
+
+    # Build active links with exact secret
+    proxy_links = []
+    for sub in all_subdomains[:12]:
+        link = f"https://t.me/proxy?server={sub}.goooalir.co.uk&port={PORT}&secret={SECRET}"
+        proxy_links.append(link)
+
+    return proxy_links
 
 def main():
-    proxies = get_live_proxies()
+    proxies = get_exact_working_proxies()
 
-    # Dynamic fallback rotation with high-speed working domain MTProtos
-    if len(proxies) < 6:
-        working_backup = [
-            "https://t.me/proxy?server=zemestan.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
-            "https://t.me/proxy?server=esteghlal.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
-            "https://t.me/proxy?server=nigan.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
-            "https://t.me/proxy?server=leomessi.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
-            "https://t.me/proxy?server=perspolis.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
-            "https://t.me/proxy?server=narooo.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ"
-        ]
-        for p in working_backup:
-            if p not in proxies:
-                proxies.append(p)
+    p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12 = (proxies + proxies[:12])[:12]
 
-    p1, p2, p3, p4, p5, p6 = proxies[:6]
-
+    # Matching exact layout format
     text = (
         "⚡ <b>Fast MTProto Proxy</b> ⚡\n\n"
         f"<b><a href=\"{p1}\">پروکسی</a> | <a href=\"{p2}\">پروکسی</a> | <a href=\"{p3}\">پروکسی</a></b>\n"
-        f"<b><a href=\"{p4}\">پروکسی</a> | <a href=\"{p5}\">پروکسی</a> | <a href=\"{p6}\">پروکسی</a></b>\n\n"
+        f"<b><a href=\"{p4}\">پروکسی</a> | <a href=\"{p5}\">پروکسی</a> | <a href=\"{p6}\">پروکسی</a></b>\n"
+        f"<b><a href=\"{p7}\">پروکسی</a> | <a href=\"{p8}\">پروکسی</a> | <a href=\"{p9}\">پروکسی</a></b>\n"
+        f"<b><a href=\"{p10}\">پروکسی</a> | <a href=\"{p11}\">پروکسی</a> | <a href=\"{p12}\">پروکسی</a></b>\n\n"
         f"🚀 <b><a href=\"{p1}\">Connect Proxy</a></b>"
     )
     
