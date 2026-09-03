@@ -49,12 +49,12 @@ def main():
 
     # Matching exact layout format
     text = (
-        "⚡ <b>Fast MTProto Proxy</b> ⚡\n\n"
-        f"<b><a href=\"{p1}\">پروکسی</a> | <a href=\"{p2}\">پروکسی</a> | <a href=\"{p3}\">پروکسی</a></b>\n"
-        f"<b><a href=\"{p4}\">پروکسی</a> | <a href=\"{p5}\">پروکسی</a> | <a href=\"{p6}\">پروکسی</a></b>\n"
-        f"<b><a href=\"{p7}\">پروکسی</a> | <a href=\"{p8}\">پروکسی</a> | <a href=\"{p9}\">پروکسی</a></b>\n"
-        f"<b><a href=\"{p10}\">پروکسی</a> | <a href=\"{p11}\">پروکسی</a> | <a href=\"{p12}\">پروکسی</a></b>\n\n"
-        f"🚀 <b><a href=\"{p1}\">Connect Proxy</a></b>"
+        "⚡⚡ <b>MTProto Fast Proxy</b> ⚡⚡\n\n"
+        f"<b><a href=\"{p1}\">Proxy</a> | <a href=\"{p2}\">پروکسی</a> | <a href=\"{p3}\">Proxy</a></b>\n"
+        f"<b><a href=\"{p4}\">Proxy</a> | <a href=\"{p5}\">پروکسی</a> | <a href=\"{p6}\">Proxy</a></b>\n"
+        f"<b><a href=\"{p7}\">Proxy</a> | <a href=\"{p8}\">پروکسی</a> | <a href=\"{p9}\">Proxy</a></b>\n"
+        f"<b><a href=\"{p10}\">Proxy</a> | <a href=\"{p11}\">پروکسی</a> | <a href=\"{p12}\">Proxy</a></b>\n\n"
+        f"🚀 <b><a href=\"{p1}\">Connect Proxy</a></b>🌍"
     )
     
     payload = {
