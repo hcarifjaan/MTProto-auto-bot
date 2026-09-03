@@ -1,34 +1,26 @@
 import os
 import requests
+import re
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_NAME = os.getenv("CHANNEL_NAME")
 
 def get_proxy():
-    url = "https://raw.githubusercontent.com/mftsp/tg-proxies/main/proxies.json"
-    try:
-        response = requests.get(url, timeout=10)
-        data = response.json()
-        if isinstance(data, list) and len(data) > 0:
-            p = data[0]
-            server = p.get('host') or p.get('server')
-            port = p.get('port')
-            secret = p.get('secret')
-            if server and port and secret:
-                return f"https://t.me/proxy?server={server}&port={port}&secret={secret}"
-    except Exception as e:
-        print(f"Primary source error: {e}")
-
-    try:
-        fallback_url = "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/mtproto"
-        res = requests.get(fallback_url, timeout=10)
-        if res.status_code == 200:
-            lines = res.text.strip().split("\n")
-            for line in lines:
-                if line.startswith("tg://proxy") or line.startswith("https://t.me/proxy"):
-                    return line.strip()
-    except Exception as e:
-        print(f"Fallback source error: {e}")
+    sources = [
+        "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/mtproto",
+        "https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/sub/sub_merge.txt"
+    ]
+    
+    for url in sources:
+        try:
+            res = requests.get(url, timeout=10)
+            if res.status_code == 200:
+                # Direct tg:// or t.me proxy links search karne ke liye regex
+                matches = re.findall(r'(https://t\.me/proxy\?[^\s"\'<>]+|tg://proxy\?[^\s"\'<>]+)', res.text)
+                if matches:
+                    return matches[0]
+        except Exception as e:
+            print(f"Error fetching from {url}: {e}")
 
     return None
 
