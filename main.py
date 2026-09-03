@@ -6,7 +6,6 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_NAME = os.getenv("CHANNEL_NAME")
 
 def get_proxy():
-    # Direct reliable sources for Telegram MTProto proxies
     sources = [
         "https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/mtproto.txt",
         "https://raw.githubusercontent.com/v2fly/freenode/main/v2ray.txt",
@@ -17,14 +16,15 @@ def get_proxy():
         try:
             res = requests.get(url, timeout=10)
             if res.status_code == 200:
-                # Direct links regex match
                 matches = re.findall(r'(https://t\.me/proxy\?[^\s"\'<>]+|tg://proxy\?[^\s"\'<>]+)', res.text)
                 if matches:
-                    return matches[0]
+                    link = matches[0]
+                    if link.startswith("tg://proxy"):
+                        link = link.replace("tg://proxy", "https://t.me/proxy")
+                    return link
         except Exception as e:
             print(f"Error fetching from {url}: {e}")
 
-    # Final guaranteed fallback API
     try:
         api_url = "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=mtproto&timeout=10000"
         res = requests.get(api_url, timeout=10)
