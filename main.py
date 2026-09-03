@@ -54,7 +54,7 @@ def main():
         f"<b><a href=\"{p4}\">Proxy</a> | <a href=\"{p5}\">پروکسی</a> | <a href=\"{p6}\">Proxy</a></b>\n"
         f"<b><a href=\"{p7}\">Proxy</a> | <a href=\"{p8}\">پروکسی</a> | <a href=\"{p9}\">Proxy</a></b>\n"
         f"<b><a href=\"{p10}\">Proxy</a> | <a href=\"{p11}\">پروکسی</a> | <a href=\"{p12}\">Proxy</a></b>\n\n"
-        f"🚀 <b><a href=\"{p1}\">Connect Proxy</a></b>🌍"
+        f"🚀 <b><a href=\"{p1}\">Connect Proxy</a></b>🌍\n\n"
         "<b>چینل کو سبسکرائب کریں</b>"
     )
     
