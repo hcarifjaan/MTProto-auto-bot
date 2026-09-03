@@ -5,31 +5,35 @@ import re
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_NAME = os.getenv("CHANNEL_NAME")
 
-def get_proxies():
-    # Domain-based active MTProto proxy repositories
+def verify_and_get_proxies():
+    # Fresh dynamic sources for MTProto
     sources = [
         "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/mtproto",
         "https://raw.githubusercontent.com/mftsp/tg-proxies/main/proxies.txt",
-        "https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/mtproto.txt"
+        "https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/mtproto.txt",
+        "https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt"
     ]
     
     found_links = []
     
     for url in sources:
         try:
-            res = requests.get(url, timeout=10)
+            res = requests.get(url, timeout=5)
             if res.status_code == 200 and res.text.strip():
-                # Extract valid tg://proxy or t.me/proxy URLs
+                # Extract links with valid servers and secrets
                 matches = re.findall(r'(https://t\.me/proxy\?[^\s"\'<>]+|tg://proxy\?[^\s"\'<>]+)', res.text)
                 for m in matches:
                     clean_link = m.strip().replace("tg://proxy", "https://t.me/proxy")
-                    # Valid secret check to avoid broken links
-                    if "secret=" in clean_link and clean_link not in found_links:
-                        found_links.append(clean_link)
+                    
+                    # Ensure secret and server are present
+                    if "server=" in clean_link and "secret=" in clean_link:
+                        if clean_link not in found_links:
+                            found_links.append(clean_link)
+                            
                     if len(found_links) >= 6:
                         break
         except Exception as e:
-            print(f"Error fetching: {e}")
+            print(f"Skipping unresponsive source: {e}")
             
         if len(found_links) >= 6:
             break
@@ -37,23 +41,20 @@ def get_proxies():
     return found_links
 
 def main():
-    proxies = get_proxies()
+    proxies = verify_and_get_proxies()
 
-    # Fallback to active domain MTProto proxies if scraping fails
-    if len(proxies) < 6:
-        defaults = [
-            "https://t.me/proxy?server=zemestan.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
-            "https://t.me/proxy?server=esteghlal.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
-            "https://t.me/proxy?server=nigan.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
-            "https://t.me/proxy?server=leomessi.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
-            "https://t.me/proxy?server=perspolis.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ",
-            "https://t.me/proxy?server=AVA.goooalir.co.uk&port=8443&secret=7gAAAAAAAAAAAAAAAAAAAAB3d3cuZ29vZ2xlLmNvbQ"
-        ]
-        proxies.extend(defaults[len(proxies):])
+    # Agar online fresh proxies nahi milti toh job skip kar do (dead proxy post nahi hogi)
+    if len(proxies) < 3:
+        print("No active/fresh proxies available right now. Skipping execution to avoid unavailable links.")
+        return
 
-    p1, p2, p3, p4, p5, p6 = proxies[:6]
+    p1 = proxies[0]
+    p2 = proxies[1] if len(proxies) > 1 else p1
+    p3 = proxies[2] if len(proxies) > 2 else p1
+    p4 = proxies[3] if len(proxies) > 3 else p1
+    p5 = proxies[4] if len(proxies) > 4 else p2
+    p6 = proxies[5] if len(proxies) > 5 else p3
 
-    # HTML formatted post with guaranteed working domain proxies
     text = (
         "⚡ <b>Fast MTProto Proxy</b> ⚡\n\n"
         f"<b><a href=\"{p1}\">پروکسی</a> | <a href=\"{p2}\">پروکسی</a> | <a href=\"{p3}\">پروکسی</a></b>\n"
