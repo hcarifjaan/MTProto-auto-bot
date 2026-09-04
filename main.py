@@ -8,7 +8,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_NAME = os.getenv("CHANNEL_NAME")
 
 # Latest News RSS Feed
-NEWS_RSS_URL = "https://feeds.bbci.co.uk/news/world/rss.xml"
+NEWS_RSS_URL = "https://www.coindesk.com/arc/outboundfeeds/rss/"
 
 def fetch_latest_news():
     """BBC RSS Feed se latest news title, summary aur image extract karta hai."""
