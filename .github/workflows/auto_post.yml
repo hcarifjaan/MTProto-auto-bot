@@ -1,4 +1,4 @@
-Name: Post MTProto Proxies
+name: Post MTProto Proxies
 
 on:
   schedule:
