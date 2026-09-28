@@ -1,68 +1,52 @@
 import os
 import requests
 import feedparser
-import json
+import random
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_NAME = os.getenv("CHANNEL_NAME")
 
-NEWS_RSS_URL = "https://www.coindesk.com/arc/outboundfeeds/rss/"
-HISTORY_FILE = "last_posted.json"
-
-def get_last_posted_title():
-    if os.path.exists(HISTORY_FILE):
-        try:
-            with open(HISTORY_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                return data.get("title")
-        except:
-            return None
-    return None
-
-def save_last_posted_title(title):
-    with open(HISTORY_FILE, "w", encoding="utf-8") as f:
-        json.dump({"title": title}, f)
+# 3 Mukhtalif Crypto News RSS Feeds
+NEWS_RSS_URLS = [
+    "https://www.coindesk.com/arc/outboundfeeds/rss/",
+    "https://cointelegraph.com/rss",
+    "https://decrypt.co/feed"
+]
 
 def fetch_latest_news():
     try:
-        feed = feedparser.parse(NEWS_RSS_URL)
-        if not feed.entries:
-            return None, None, None, None
+        all_entries = []
+        # Sabhi websites se entries collect karein
+        for rss_url in NEWS_RSS_URLS:
+            feed = feedparser.parse(rss_url)
+            if feed.entries:
+                # Har feed se pehli 3-3 fresh entries le lein
+                all_entries.extend(feed.entries[:3])
 
-        last_title = get_last_posted_title()
-        
-        # Aisi entry dhoondें jo pehle post na hui ho
-        target_entry = None
-        for entry in feed.entries:
-            if entry.title != last_title:
-                target_entry = entry
-                break
-        
-        # Agar saari entries purani hain, toh sab se pehli utha lein taake loop na ruke
-        if not target_entry and feed.entries:
-            target_entry = feed.entries[0]
+        if not all_entries:
+            return None, None, None
 
-        if not target_entry:
-            return None, None, None, None
+        # Randomly ek fresh news select karein taake har baar alag website se aaye
+        random_entry = random.choice(all_entries)
+        title = random_entry.title
+        summary = random_entry.get("summary", "")
 
-        title = target_entry.title
-        summary = target_entry.get("summary", "")
-
+        # Image URL extract karne ki koshish
         image_url = None
-        if 'media_thumbnail' in target_entry and len(target_entry.media_thumbnail) > 0:
-            image_url = target_entry.media_thumbnail[0]['url']
-        elif 'media_content' in target_entry and len(target_entry.media_content) > 0:
-            image_url = target_entry.media_content[0]['url']
-        elif 'links' in target_entry:
-            for link in target_entry.links:
+        if 'media_thumbnail' in random_entry and len(random_entry.media_thumbnail) > 0:
+            image_url = random_entry.media_thumbnail[0]['url']
+        elif 'media_content' in random_entry and len(random_entry.media_content) > 0:
+            image_url = random_entry.media_content[0]['url']
+        elif 'links' in random_entry:
+            for link in random_entry.links:
                 if link.get('type', '').startswith('image/'):
                     image_url = link.href
                     break
 
-        return title, summary, image_url, title
+        return title, summary, image_url
     except Exception as e:
         print(f"News fetch error: {e}")
-        return None, None, None, None
+        return None, None, None
 
 def main():
     SECRET = "ee104462821249bd7ac519130220c25d097777772e636c6f7564666c6172652e636f6d"
@@ -73,14 +57,11 @@ def main():
     P4 = f"https://t.me/proxy?server=fastproxt.duckdns.org&port=8443&secret={SECRET}"
     P5 = f"https://t.me/proxy?server=jaanproxy.duckdns.org&port=8443&secret={SECRET}"
 
-    title, summary, image_url, current_title = fetch_latest_news()
+    title, summary, image_url = fetch_latest_news()
     
     if not title:
         print("No news found.")
         return
-
-    # Save current title to history so it won't repeat next time
-    save_last_posted_title(current_title)
 
     news_section = f"📰 <b>{title}</b>\n\n"
     if summary:
