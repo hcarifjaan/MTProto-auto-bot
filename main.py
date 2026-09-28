@@ -37,8 +37,14 @@ def fetch_latest_news():
         return None, None, None
 
 def main():
-    # Aap ki apni Oracle Cloud MTProto Proxy link
-    MY_PROXY = "https://t.me/proxy?server=92.5.166.165&port=443&secret=2e6aadc2a1d8277fbbd3a311a0592dfc"
+    # Aap ke tamam naye DuckDNS domains ki Proxy links (Port 8443 aur Secret ke sath)
+    SECRET = "ee104462821249bd7ac519130220c25d097777772e636c6f7564666c6172652e636f6d"
+    
+    P1 = f"https://t.me/proxy?server=ajfastproxy.duckdns.org&port=8443&secret={SECRET}"
+    P2 = f"https://t.me/proxy?server=arif007fastproxy.duckdns.org&port=8443&secret={SECRET}"
+    P3 = f"https://t.me/proxy?server=arifproxy.duckdns.org&port=8443&secret={SECRET}"
+    P4 = f"https://t.me/proxy?server=fastproxt.duckdns.org&port=8443&secret={SECRET}"
+    P5 = f"https://t.me/proxy?server=jaanproxy.duckdns.org&port=8443&secret={SECRET}"
 
     # Latest News fetch karein
     title, summary, image_url = fetch_latest_news()
@@ -51,14 +57,14 @@ def main():
             news_section += f"{summary}\n\n"
         news_section += "-----------------------------------\n\n"
 
-    # Exact layout format aapki apni proxy ke sath
+    # Multiple Domains Layout Format
     proxy_text = (
         "⚡⚡ <b>MTProto Fast Proxy</b> ⚡⚡\n\n"
-        f"<b><a href=\"{MY_PROXY}\">Proxy</a> | <a href=\"{MY_PROXY}\">پروکسی</a> | <a href=\"{MY_PROXY}\">Proxy</a></b>\n"
-        f"<b><a href=\"{MY_PROXY}\">Proxy</a> | <a href=\"{MY_PROXY}\">پروکسی</a> | <a href=\"{MY_PROXY}\">Proxy</a></b>\n"
-        f"<b><a href=\"{MY_PROXY}\">Proxy</a> | <a href=\"{MY_PROXY}\">پروکسی</a> | <a href=\"{MY_PROXY}\">Proxy</a></b>\n"
-        f"<b><a href=\"{MY_PROXY}\">Proxy</a> | <a href=\"{MY_PROXY}\">پروکسی</a> | <a href=\"{MY_PROXY}\">Proxy</a></b>\n\n"
-        f"🚀 <b><a href=\"{MY_PROXY}\">Connect Proxy</a></b> 🌍\n\n"
+        f"<b><a href=\"{P1}\">Proxy 1</a> | <a href=\"{P2}\">پروکسی 2</a> | <a href=\"{P3}\">Proxy 3</a></b>\n"
+        f"<b><a href=\"{P4}\">Proxy 4</a> | <a href=\"{P5}\">پروکسی 5</a> | <a href=\"{P1}\">Proxy 1</a></b>\n"
+        f"<b><a href=\"{P2}\">Proxy 2</a> | <a href=\"{P3}\">پروکسی 3</a> | <a href=\"{P4}\">Proxy 4</a></b>\n"
+        f"<b><a href=\"{P5}\">Proxy 5</a> | <a href=\"{P1}\">پروکسی 1</a> | <a href=\"{P2}\">Proxy 2</a></b>\n\n"
+        f"🚀 <b><a href=\"{P3}\">Connect Fast Proxy</a></b> 🌍\n\n"
         "<b>📢 Connect to any proxy. Use Telegram without a VPN. Fast and free. 🚀</b>\n\n"
         "<b>چینل کو سبسکرائب کریں</b>"
     )
