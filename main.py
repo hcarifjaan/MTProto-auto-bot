@@ -21,7 +21,7 @@ def fetch_latest_news():
             feed = feedparser.parse(rss_url)
             if feed.entries:
                 # Har feed se pehli 3-3 fresh entries le lein
-                all_entries.extend(feed.entries[:3])
+                all_entries.extend(feed.entries[:9])
 
         if not all_entries:
             return None, None, None
